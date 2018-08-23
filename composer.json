@@ -1,0 +1,22 @@
+{
+    "name": "payboxmoney/pay",
+    "type": "library",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Sergey Astapenko",
+            "email": "sa@paybox.money"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Paybox\\Pay\\": "src/",
+            "Paybox\\Pay\\Models\\": "src/models/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.0",
+        "payboxmoney/core": "^1.2.0"
+    }
+}
