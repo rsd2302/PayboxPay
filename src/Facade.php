@@ -10,20 +10,18 @@
 
 namespace Paybox\Pay;
 
-use Paybox\Core\ {
-    Exceptions\Property as PropertyException,
-    Exceptions\Connection as ConnectionException,
-    Exceptions\Request as RequestException,
-    Abstractions\DataContainer,
-    Interfaces\Pay as PaymentInterface
-};
+use Paybox\Core\Exceptions\Property as PropertyException;
+use Paybox\Core\Exceptions\Connection as ConnectionException;
+use Paybox\Core\Exceptions\Request as RequestException;
+use Paybox\Core\Abstractions\DataContainer;
+use Paybox\Core\Interfaces\Pay as PaymentInterface;
 
 /**
  * Facade of Paybox\Pay classes
  * Simple facade for comfortable using a whole Paybox Pay functionality
  *
  * @package Paybox\Pay
- * @version 1.2.2
+ * @version 1.1.0
  * @author Sergey Astapenko <sa@paybox.money> @link https://paybox.money
  * @copyright LLC Paybox.money
  * @license GPLv3 @link https://www.gnu.org/licenses/gpl-3.0-standalone.html
@@ -59,18 +57,24 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function init():bool {
+    public function init() {
         try {
             $this->order->required('amount');
             $this->order->required('description');
             $this->save('init_payment');
             $this->send();
             $this->redirectUrl = $this->getServerAnswer('redirect_url');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+
+            return true;
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
-        return true;
+
+        return false;
     }
 
     /**
@@ -81,15 +85,20 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function recurringStart(int $lifetime):bool {
+    public function recurringStart($lifetime) {
         try {
             $this->config->isRecurringStart = true;
             $this->config->recurringLifetime = $lifetime;
             return $this->init();
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
+
+        return false;
     }
 
     /**
@@ -107,10 +116,15 @@ class Facade extends DataContainer implements PaymentInterface {
             $this->save('make_recurring_payment');
             $this->send();
             return $this->getServerAnswer('status');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
+
+        return false;
     }
 
     /**
@@ -126,15 +140,20 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function getStatus():string {//paymentId or OrderId
+    public function getStatus() {//paymentId or OrderId
         try {
             $this->save('get_status');
             $this->send();
             return $this->getServerAnswer('transaction_status');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
+
+        return false;
     }
 
     /**
@@ -146,17 +165,21 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function revoke(int $amount = 0):string {
+    public function revoke($amount = 0) {
         try {
             $this->payment->refundAmount = $amount;
             $this->save('revoke');
             $this->send();
             return $this->getServerAnswer('transaction_status');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
 
+        return false;
     }
 
     /**
@@ -168,17 +191,22 @@ class Facade extends DataContainer implements PaymentInterface {
      * @return string | Exception
      */
 
-    public function refund(string $comment, int $amount = 0):string {
+    public function refund($comment, $amount = 0) {
         try {
             $this->required('comment');
             $this->payment->refundAmount = $amount;
             $this->save('create_refund_request');
             $this->send();
             return $this->getServerAnswer('status');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
+
+        return false;
     }
 
     /**
@@ -189,16 +217,21 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function capture():string {
+    public function capture() {
         try {
             $this->payment->required('id');
             $this->save('do_capture');
             $this->send();
             return $this->getServerAnswer('status');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
+
+        return false;
     }
 
     /**
@@ -208,16 +241,21 @@ class Facade extends DataContainer implements PaymentInterface {
      * @return array | Exception
      */
 
-    public function getPaymentSystems():array {
+    public function getPaymentSystems() {
         try {
             $this->order->required('amount');
             $this->save('ps_list');
             $this->send();
             return $this->getServerArrayAnswer('payment_system');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return [];
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
+
+        return [];
     }
 
     /**
@@ -227,16 +265,21 @@ class Facade extends DataContainer implements PaymentInterface {
      * @return string
      */
 
-    public function cancelBill():string {
+    public function cancelBill() {
         try {
             $this->payment->required('id');
             $this->save('cancel');
             $this->send();
             return $this->getServerAnswer('status');
-        } catch(PropertyException | ConnectionException | RequestException $e) {
+        } catch(PropertyException $e) {
             echo $e->getMessage();
-            return false;
+        } catch(ConnectionException $e) {
+            echo $e->getMessage();
+        } catch(RequestException $e) {
+            echo $e->getMessage();
         }
+
+        return false;
     }
 
     /**
@@ -249,7 +292,7 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function error(string $errorDescription) {
+    public function error($errorDescription) {
         header('Content-Type: application/xml', true, 500);
         $this->answer->status = 'error';
         $this->answer->errorDescription = $errorDescription;
@@ -269,7 +312,7 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function accept(string $successMessage) {
+    public function accept($successMessage) {
         header('Content-Type: application/xml', true, 200);
         $this->answer->status = 'ok';
         $this->answer->description = $successMessage;
@@ -287,7 +330,7 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function waiting(int $waitingTimer) {
+    public function waiting($waitingTimer) {
         header('Content-Type: application/xml', true, 200);
         $this->answer->status = 'ok';
         $this->answer->timeout = $waitingTimer;
@@ -306,7 +349,7 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    public function cancel(string $cancelDescription) {
+    public function cancel($cancelDescription) {
         header('Content-Type: application/xml', true, 200);
         $this->answer->status = 'rejected';
         $this->answer->description = $cancelDescription;
@@ -353,7 +396,7 @@ class Facade extends DataContainer implements PaymentInterface {
      * @return array
      */
 
-    public function parseXML($request):array {
+    public function parseXML($request) {
         return (array) (new \SimpleXMLElement($request['pg_xml']));
     }
 
@@ -365,7 +408,7 @@ class Facade extends DataContainer implements PaymentInterface {
      *
      */
 
-    protected function getBaseUrl():string {
+    protected function getBaseUrl() {
         return 'https://api.paybox.money/';
     }
 
