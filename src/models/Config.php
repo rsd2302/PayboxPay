@@ -157,4 +157,9 @@ final class Config extends CoreConfig {
      */
     public $isTestingMode;
 
+    /**
+     * @var string $paymentRoute Optional.
+     * If is "frame", payment form can be opened as frame
+     */
+    public $paymentRoute;
 }
