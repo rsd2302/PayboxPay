@@ -156,5 +156,11 @@ final class Config extends CoreConfig {
      * If is TRUE, Your payment will be marked as 'testing' and You can use it for testing a payment systems
      */
     public $isTestingMode;
-
+    
+    /**
+     * @var string $paymentRoute Optional.
+     * If is "frame", payment form can be opened as frame
+     */
+    public $paymentRoute;
+}
 }
