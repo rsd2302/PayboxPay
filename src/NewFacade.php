@@ -10,6 +10,7 @@
 
 namespace Paybox\Pay;
 
+use SimpleXMLElement;
 use Paybox\Core\Interfaces\Pay as PaymentInterface;
 
 class NewFacade extends Facade implements PaymentInterface {
