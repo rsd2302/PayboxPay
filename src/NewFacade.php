@@ -12,6 +12,7 @@ namespace Paybox\Pay;
 
 use SimpleXMLElement;
 use Paybox\Core\Interfaces\Pay as PaymentInterface;
+use Paybox\Core\Exceptions\Request as RequestException;
 
 class NewFacade extends Facade implements PaymentInterface {
 
